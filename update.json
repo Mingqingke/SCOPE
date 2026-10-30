@@ -1,15 +1,16 @@
 {
-  "versionCode": 6,
-  "versionName": "1.1.4",
-  "notes": "深色模式改为原位下拉选择\n更新源修复 可正常检查\nRoot 与 Shizuku 授权检测修复\n按压反馈只保留首页三张卡片\n关于页直达作者\n修复了一些已知问题",
+  "versionCode": 7,
+  "versionName": "1.1.5",
+  "notes": "更新源改为多源取最高版本\n修复网络权限导致的检查失败\n深色模式改为原位下拉\nRoot 与 ADB 授权检测修复\n按压反馈只保留首页\n关于页直达作者\n修复了一些已知问题",
   "size": 8929121,
-  "sha256": "4635920fe6055eefb3ed96fa37b2f32df03d1adcfcc0740d1a459576fae4fc9b",
+  "sha256": "72c13624bfe2ae5710049826b8758555785c87951c6cb183b4723ecf3b322bb9",
   "force": false,
   "apkUrls": [
-    "https://github.com/Mingqingke/SCOPE/releases/download/v1.1.4/SCOPE-v1.1.4.apk",
-    "https://cdn.jsdelivr.net/gh/Mingqingke/SCOPE@main/releases/SCOPE-v1.1.4.apk",
-    "https://raw.githubusercontent.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.1.4.apk",
-    "https://raw.gitmirror.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.1.4.apk",
-    "https://ghproxy.net/https://github.com/Mingqingke/SCOPE/releases/download/v1.1.4/SCOPE-v1.1.4.apk"
+    "https://github.com/Mingqingke/SCOPE/releases/download/v1.1.5/SCOPE-v1.1.5.apk",
+    "https://cdn.jsdelivr.net/gh/Mingqingke/SCOPE@main/releases/SCOPE-v1.1.5.apk",
+    "https://raw.githack.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.1.5.apk",
+    "https://raw.githubusercontent.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.1.5.apk",
+    "https://raw.gitmirror.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.1.5.apk",
+    "https://ghproxy.net/https://github.com/Mingqingke/SCOPE/releases/download/v1.1.5/SCOPE-v1.1.5.apk"
   ]
 }
