@@ -2,8 +2,8 @@
   "versionCode": 3,
   "versionName": "1.1.1",
   "notes": "修复了一些已知问题\n应用图标更新\n权限可在应用内直接开关",
-  "size": 8792955,
-  "sha256": "f7f8c10668b23c5e0e5dd3d52b14678beeab168e120541f4414f73a13bfd9c24",
+  "size": 8792959,
+  "sha256": "29e6c1623fcd95168d823235364bd9c1966cfb6822d42c1b7215595a9de25299",
   "force": false,
   "apkUrls": [
     "https://github.com/Mingqingke/SCOPE/releases/download/v1.1.1/SCOPE-v1.1.1.apk",

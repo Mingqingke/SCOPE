@@ -41,17 +41,18 @@ object Updater {
     private const val REPO = "SCOPE"
 
     val configSources: List<String> = listOf(
-        "https://raw.githubusercontent.com/$OWNER/$REPO/main/update.json",
         "https://cdn.jsdelivr.net/gh/$OWNER/$REPO@main/update.json",
-        "https://raw.gitmirror.com/$OWNER/$REPO/main/update.json",
+        "https://raw.githubusercontent.com/$OWNER/$REPO/main/update.json",
         "https://ghproxy.net/https://raw.githubusercontent.com/$OWNER/$REPO/main/update.json",
+        "https://raw.gitmirror.com/$OWNER/$REPO/main/update.json",
     )
 
     private val json = Json { ignoreUnknownKeys = true; isLenient = true }
 
     suspend fun check(sources: List<String> = configSources): UpdateCheck = withContext(Dispatchers.IO) {
+        // 源按可靠性排序：首个可解析且更新的源立即返回，避免被不可达源拖慢
+        var reachable = false
         val failures = mutableListOf<String>()
-        var best: UpdateCheck.Available? = null
         sources.forEach { source ->
             val text = runCatching { fetchText(source) }.getOrNull()
             if (text.isNullOrBlank()) {
@@ -63,25 +64,19 @@ object Updater {
                 failures += source.substringAfter("//").substringBefore("/")
                 return@forEach
             }
+            reachable = true
             if (info.versionCode > BuildConfig.VERSION_CODE) {
-                if (best == null || info.versionCode > best!!.info.versionCode) {
-                    best = UpdateCheck.Available(info, source.substringAfter("//").substringBefore("/"))
-                }
-            } else if (best == null) {
-                best = null
+                return@withContext UpdateCheck.Available(info, source.substringAfter("//").substringBefore("/"))
             }
         }
-        best ?: if (failures.size == sources.size) {
-            UpdateCheck.Failed("所有更新源均不可达（${failures.distinct().joinToString(" / ")}）")
-        } else {
-            UpdateCheck.Latest
-        }
+        if (reachable) UpdateCheck.Latest
+        else UpdateCheck.Failed("所有更新源均不可达（${failures.distinct().joinToString(" / ")}）")
     }
 
     private fun fetchText(url: String): String {
         val connection = (URL(url).openConnection() as HttpURLConnection).apply {
-            connectTimeout = 12000
-            readTimeout = 12000
+            connectTimeout = 8000
+            readTimeout = 8000
             requestMethod = "GET"
             setRequestProperty("Cache-Control", "no-cache")
         }

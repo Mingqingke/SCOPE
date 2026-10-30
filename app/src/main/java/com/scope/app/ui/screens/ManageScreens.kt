@@ -238,7 +238,11 @@ fun AuthScreen(
                             onClick = {
                                 coroutine.launch {
                                     val granted = withContext(Dispatchers.IO) {
-                                        runCatching { com.topjohnwu.superuser.Shell.isAppGrantedRoot() == true }.getOrDefault(false)
+                                        runCatching {
+                                            // 主动获取 shell 以触发 KernelSU / Magisk 授权弹窗
+                                            com.topjohnwu.superuser.Shell.getShell()
+                                            com.topjohnwu.superuser.Shell.isAppGrantedRoot() == true
+                                        }.getOrDefault(false)
                                     }
                                     if (granted) notify("已获得 Root 授权")
                                     else notify("未获得 Root 授权，请确认设备已 Root")
