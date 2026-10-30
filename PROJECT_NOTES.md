@@ -1,4 +1,4 @@
-# SCOPE 工程备注（v1.1.1）
+# SCOPE 工程备注（v1.1.2）
 
 ## 导航
 - `ui/Route.kt`：`@Serializable sealed interface Route : NavKey`，全应用唯一路由表。
@@ -22,7 +22,13 @@
 - 发布仓库：https://github.com/Mingqingke/SCOPE （源码 + update.json + releases）
 
 ## 图标
-自适应图标：白底 + 黑色 S 形笔画（`ic_launcher_foreground.xml`，stroke 14.5、圆角端点），monochrome 复用同一前景。
+自适应图标直接使用用户提供图片中提取的字形（`drawable-nodpi/ic_launcher_fg.png`，透明度保留），白底，monochrome 复用同一前景；不再自行设计图形。
+
+## 1.1.2 修正
+- 页面统一包裹不透明 `PageSurface`，转场不再透出下层内容。
+- 未授权 / 未连接状态的圆环与状态点改为红色。
+- 设备信息精简为设备 / 系统 / 硬件 / 存储四组。
+- 关于页新增 GitHub 仓库入口。
 
 ## 未验证
 - 无真机 / 模拟器：转场、预测性返回、Insets、真实授权与更新安装流程均未实机验证。
