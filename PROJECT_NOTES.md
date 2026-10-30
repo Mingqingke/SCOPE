@@ -1,25 +1,30 @@
-# SCOPE 工程备注（v1.1.0）
+# SCOPE 工程备注（v1.1.1）
 
 ## 导航
-- `ui/Route.kt`：`@Serializable sealed interface Route : NavKey`，全应用唯一路由定义。
-- `ui/AppRoot.kt`：四个主入口各自一条 `NavController` 返回栈；只用 Miuix `NavDisplay` 渲染当前栈，页面进出、视差、预测性返回与滑动返回交给 `NavTransitions.MiuixDefault`。
-- 系统返回顺序：Dialog/BottomSheet（Miuix 自身）→ 当前栈 pop（NavDisplay）→ 非首页标签根页面回首页（单个根级 BackHandler）→ 首页根页面交给系统退出。
-- 减少动效或系统动画缩放为 0 时切换为 `NavTransitions.None`。
+- `ui/Route.kt`：`@Serializable sealed interface Route : NavKey`，全应用唯一路由表。
+- `ui/AppRoot.kt`：四个主入口各一条 `NavController` 栈，只有当前栈由 `NavDisplay` 渲染。
+- 转场 `NavTransitions.MiuixDefault`；减少动效或系统动画缩放为 0 时用 `NavTransitions.None`。
+- 返回优先级：Dialog / BottomSheet → 当前栈 pop → 非首页标签根页面回首页 → 首页交系统退出。
 
-## 设置中心
-- 首页只放 5 个分类入口：授权与系统 / 外观与交互 / 安全与操作 / 数据与维护 / 关于与设备。
-- 二级页面：`SettingsSystemScreen`（状态卡 + 后端优先级 + 授权详情 + 能力 + 重新检测）、`SettingsAppearanceScreen`、`SettingsSafetyScreen`、`SettingsDataScreen`、`SettingsAboutDeviceScreen`。
-- 三级页面：`DeviceInfoScreen`（概览/系统/硬件/存储/授权）、`AboutScopeScreen`、`LicensesScreen`。
-- `Prefs` 迁移旧键 `tilt_feedback` → `card_feedback`，升级不重置设置。
+## 设置
+五个分类：授权与系统 / 外观与交互 / 安全与操作 / 数据与维护 / 关于与设备；三级页面含设备信息、关于、许可。
 
-## 行为与持久化
-- 卡片反馈 0 Sink / 1 Tilt / 2 关闭；减少动效时 Tilt 降级为 Sink。
-- 确认策略：冻结、权限/AppOps、批量执行三档，均真实拦截对应操作。
-- 备份：`core/Backup.kt` 用 SAF 导出/导入 JSON（设置、场景、记录），导入前显示摘要并确认，不触碰应用与系统数据。
-- 操作记录支持类型/结果/关键字筛选与逐条恢复。
+## 权限在应用内完成
+- AppOps 类：`appops set`。
+- 通知使用权 / 无障碍：`settings put secure enabled_*`，自动定位应用声明的服务组件。
+- 电池优化：`cmd deviceidle whitelist +/-pkg`。
+- 全部修改后重新读取校验，失败如实返回；普通模式下点击卡片提示授权，不再跳系统设置。
 
-## 未验证 / 限制
-- 构建环境无真机与模拟器：页面转场、预测性返回、系统栏 Insets、真实授权流程均未在设备上验证。
-- Shizuku 13 的 `newProcess` 为私有方法，通过反射调用，未在授权设备上实测。
-- 场景步骤 UI 仍以「冻结应用」为主，`ScenarioStep` 已支持 APPOP 但暂无编辑入口。
-- 应用运行状态未实现（需要 usage stats 或 root ps）。
+## 更新
+- `core/Update.kt` 多源检查（jsDelivr 优先，raw / ghproxy / gitmirror 兜底），启动自动检查并弹 Miuix 更新面板。
+- 下载按 URL 顺序重试，SHA-256 校验通过才允许安装；FileProvider + 系统安装器。
+- 版本规则：小修复 0.01，大版本重构才用 2.00 编号；小版本说明统一「修复了一些已知问题」。
+- 发布仓库：https://github.com/Mingqingke/SCOPE （源码 + update.json + releases）
+
+## 图标
+自适应图标：白底 + 黑色 S 形笔画（`ic_launcher_foreground.xml`，stroke 14.5、圆角端点），monochrome 复用同一前景。
+
+## 未验证
+- 无真机 / 模拟器：转场、预测性返回、Insets、真实授权与更新安装流程均未实机验证。
+- Shizuku 私有 `newProcess` 反射调用未在授权设备实测。
+- 场景编辑仍以冻结步骤为主；应用运行状态未实现。
