@@ -1,6 +1,7 @@
 package com.scope.app.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -50,6 +51,7 @@ import com.scope.app.ui.screens.SettingsHomeScreen
 import com.scope.app.ui.screens.SettingsSafetyScreen
 import com.scope.app.ui.screens.SettingsSystemScreen
 import com.scope.app.ui.screens.SpecialAccessScreen
+import com.scope.app.ui.screens.UpdateSheet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -67,6 +69,19 @@ import top.yukonga.miuix.kmp.nav.core.NavController
 import top.yukonga.miuix.kmp.nav.core.NavDisplay
 import top.yukonga.miuix.kmp.nav.core.rememberNavController
 import top.yukonga.miuix.kmp.nav.transition.NavTransitions
+import top.yukonga.miuix.kmp.theme.MiuixTheme
+
+/** 每一页都必须是不透明页面，转场时不能透出下层内容。 */
+@Composable
+private fun PageSurface(content: @Composable () -> Unit) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(MiuixTheme.colorScheme.surface),
+    ) {
+        content()
+    }
+}
 
 @Composable
 fun ScopeRoot() {
@@ -79,7 +94,6 @@ fun ScopeRoot() {
     var tab by rememberSaveable { mutableIntStateOf(0) }
     var updateInfo by remember { mutableStateOf<com.scope.app.core.UpdateInfo?>(null) }
 
-    // 每个主入口一条独立返回栈：切换标签不丢失各自页面
     val homeNav = rememberNavController<Route>(Route.Home)
     val appsNav = rememberNavController<Route>(Route.Apps)
     val manageNav = rememberNavController<Route>(Route.Manage)
@@ -102,10 +116,7 @@ fun ScopeRoot() {
             Backend.refresh(context)
             AppRepo.load(context)
         }
-        // 启动时静默检查更新，有可用版本才弹出
-        kotlinx.coroutines.withContext(Dispatchers.IO) {
-            com.scope.app.core.Updater.check()
-        }.let { result ->
+        withContext(Dispatchers.IO) { com.scope.app.core.Updater.check() }.let { result ->
             if (result is com.scope.app.core.UpdateCheck.Available) updateInfo = result.info
         }
     }
@@ -115,7 +126,6 @@ fun ScopeRoot() {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
                 scope.launch {
-                    // 从系统授权页返回后立刻重新读取真实状态
                     Backend.refresh(context)
                     reloadDevice()
                 }
@@ -138,10 +148,7 @@ fun ScopeRoot() {
         }
     }
 
-    // 非首页标签根页面：返回先回首页；首页根页面不拦截，交给系统退出
-    BackHandler(enabled = atTabRoot && tab != 0) {
-        tab = 0
-    }
+    BackHandler(enabled = atTabRoot && tab != 0) { tab = 0 }
 
     val systemAnimator = remember {
         android.provider.Settings.Global.getFloat(
@@ -156,30 +163,10 @@ fun ScopeRoot() {
         bottomBar = {
             if (atTabRoot) {
                 NavigationBar {
-                    NavigationBarItem(
-                        selected = tab == 0,
-                        onClick = { tab = 0 },
-                        icon = MiuixIcons.Home,
-                        label = "首页",
-                    )
-                    NavigationBarItem(
-                        selected = tab == 1,
-                        onClick = { tab = 1 },
-                        icon = MiuixIcons.GridView,
-                        label = "应用",
-                    )
-                    NavigationBarItem(
-                        selected = tab == 2,
-                        onClick = { tab = 2 },
-                        icon = MiuixIcons.Tune,
-                        label = "管理",
-                    )
-                    NavigationBarItem(
-                        selected = tab == 3,
-                        onClick = { tab = 3 },
-                        icon = MiuixIcons.Settings,
-                        label = "设置",
-                    )
+                    NavigationBarItem(selected = tab == 0, onClick = { tab = 0 }, icon = MiuixIcons.Home, label = "首页")
+                    NavigationBarItem(selected = tab == 1, onClick = { tab = 1 }, icon = MiuixIcons.GridView, label = "应用")
+                    NavigationBarItem(selected = tab == 2, onClick = { tab = 2 }, icon = MiuixIcons.Tune, label = "管理")
+                    NavigationBarItem(selected = tab == 3, onClick = { tab = 3 }, icon = MiuixIcons.Settings, label = "设置")
                 }
             }
         },
@@ -191,11 +178,7 @@ fun ScopeRoot() {
                 .padding(padding),
         ) {
             updateInfo?.let { info ->
-                com.scope.app.ui.screens.UpdateSheet(
-                    info = info,
-                    onDismiss = { updateInfo = null },
-                    notify = ::notify,
-                )
+                UpdateSheet(info = info, onDismiss = { updateInfo = null }, notify = ::notify)
             }
 
             NavDisplay(
@@ -204,138 +187,166 @@ fun ScopeRoot() {
                 transition = transition,
             ) {
                 entry<Route.Home> {
-                    HomeScreen(
-                        status = status,
-                        device = device,
-                        onOpenAuth = { activeNav.push(Route.Auth) },
-                        onOpenCapabilities = { activeNav.push(Route.Capabilities) },
-                        onOpenScenarios = { activeNav.push(Route.Scenarios) },
-                        onRefresh = { refreshAll() },
-                    )
+                    PageSurface {
+                        HomeScreen(
+                            status = status,
+                            device = device,
+                            onOpenAuth = { activeNav.push(Route.Auth) },
+                            onOpenCapabilities = { activeNav.push(Route.Capabilities) },
+                            onOpenScenarios = { activeNav.push(Route.Scenarios) },
+                            onRefresh = { refreshAll() },
+                        )
+                    }
                 }
                 entry<Route.Apps> {
-                    AppsScreen(onOpenApp = { pkg, label -> activeNav.push(Route.AppDetail(pkg, label)) })
+                    PageSurface {
+                        AppsScreen(onOpenApp = { pkg, label -> activeNav.push(Route.AppDetail(pkg, label)) })
+                    }
                 }
                 entry<Route.Manage> {
-                    ManageScreen(status = status, onOpen = { activeNav.push(it) })
+                    PageSurface { ManageScreen(status = status, onOpen = { activeNav.push(it) }) }
                 }
                 entry<Route.Settings> {
-                    SettingsHomeScreen(onOpen = { activeNav.push(it) })
+                    PageSurface { SettingsHomeScreen(onOpen = { activeNav.push(it) }) }
                 }
 
                 entry<Route.SettingsSystem> {
-                    SettingsSystemScreen(
-                        status = status,
-                        device = device,
-                        onBack = { activeNav.pop() },
-                        onOpen = { activeNav.push(it) },
-                        onRefresh = { refreshAll() },
-                        notify = ::notify,
-                    )
+                    PageSurface {
+                        SettingsSystemScreen(
+                            status = status,
+                            device = device,
+                            onBack = { activeNav.pop() },
+                            onOpen = { activeNav.push(it) },
+                            onRefresh = { refreshAll() },
+                            notify = ::notify,
+                        )
+                    }
                 }
                 entry<Route.SettingsAppearance> {
-                    SettingsAppearanceScreen(onBack = { activeNav.pop() }, notify = ::notify)
+                    PageSurface { SettingsAppearanceScreen(onBack = { activeNav.pop() }, notify = ::notify) }
                 }
                 entry<Route.SettingsSafety> {
-                    SettingsSafetyScreen(onBack = { activeNav.pop() })
+                    PageSurface { SettingsSafetyScreen(onBack = { activeNav.pop() }) }
                 }
                 entry<Route.SettingsData> {
-                    SettingsDataScreen(
-                        onBack = { activeNav.pop() },
-                        onOpen = { activeNav.push(it) },
-                        notify = ::notify,
-                    )
+                    PageSurface {
+                        SettingsDataScreen(
+                            onBack = { activeNav.pop() },
+                            onOpen = { activeNav.push(it) },
+                            notify = ::notify,
+                        )
+                    }
                 }
                 entry<Route.SettingsAboutDevice> {
-                    SettingsAboutDeviceScreen(onBack = { activeNav.pop() }, onOpen = { activeNav.push(it) })
+                    PageSurface { SettingsAboutDeviceScreen(onBack = { activeNav.pop() }, onOpen = { activeNav.push(it) }) }
                 }
                 entry<Route.DeviceInfo> {
-                    DeviceInfoScreen(device = device, status = status, onBack = { activeNav.pop() })
+                    PageSurface { DeviceInfoScreen(device = device, status = status, onBack = { activeNav.pop() }) }
                 }
                 entry<Route.About> {
-                    AboutScopeScreen(device = device, onBack = { activeNav.pop() }, notify = ::notify)
+                    PageSurface { AboutScopeScreen(device = device, onBack = { activeNav.pop() }, notify = ::notify) }
                 }
                 entry<Route.Licenses> {
-                    LicensesScreen(onBack = { activeNav.pop() })
+                    PageSurface { LicensesScreen(onBack = { activeNav.pop() }) }
                 }
 
                 entry<Route.Auth> {
-                    AuthScreen(
-                        status = status,
-                        onBack = { activeNav.pop() },
-                        onRefresh = { refreshAll() },
-                        notify = ::notify,
-                    )
+                    PageSurface {
+                        AuthScreen(
+                            status = status,
+                            onBack = { activeNav.pop() },
+                            onRefresh = { refreshAll() },
+                            notify = ::notify,
+                        )
+                    }
                 }
                 entry<Route.Capabilities> {
-                    CapabilitiesScreen(status, device, onBack = { activeNav.pop() })
+                    PageSurface { CapabilitiesScreen(status, device, onBack = { activeNav.pop() }) }
                 }
                 entry<Route.Scenarios> {
-                    ScenarioScreen(
-                        onBack = { activeNav.pop() },
-                        onOpenEdit = { activeNav.push(Route.ScenarioEdit(it)) },
-                        notify = ::notify,
-                    )
+                    PageSurface {
+                        ScenarioScreen(
+                            onBack = { activeNav.pop() },
+                            onOpenEdit = { activeNav.push(Route.ScenarioEdit(it)) },
+                            notify = ::notify,
+                        )
+                    }
                 }
-                entry<Route.ScenarioEdit> { route ->
-                    ScenarioEditScreen(
-                        scenarioId = route.id,
-                        onBack = { activeNav.pop() },
-                        notify = ::notify,
-                    )
+                entry<Route.ScenarioEdit>(transition = NavTransitions.Modal) { route ->
+                    PageSurface {
+                        ScenarioEditScreen(
+                            scenarioId = route.id,
+                            onBack = { activeNav.pop() },
+                            notify = ::notify,
+                        )
+                    }
                 }
                 entry<Route.History> {
-                    HistoryScreen(onBack = { activeNav.pop() }, notify = ::notify)
+                    PageSurface { HistoryScreen(onBack = { activeNav.pop() }, notify = ::notify) }
                 }
                 entry<Route.Diagnostics> {
-                    DiagnosticsScreen(status, device, onBack = { activeNav.pop() })
+                    PageSurface { DiagnosticsScreen(status, device, onBack = { activeNav.pop() }) }
                 }
                 entry<Route.PermissionCenter> {
-                    PermissionCenterScreen(
-                        onBack = { activeNav.pop() },
-                        onOpen = { activeNav.push(it) },
-                        notify = ::notify,
-                    )
+                    PageSurface {
+                        PermissionCenterScreen(
+                            onBack = { activeNav.pop() },
+                            onOpen = { activeNav.push(it) },
+                            notify = ::notify,
+                        )
+                    }
                 }
 
                 entry<Route.AppDetail> { route ->
-                    AppDetailScreen(
-                        pkg = route.pkg,
-                        fallbackLabel = route.label,
-                        onBack = { activeNav.pop() },
-                        onOpenPermissions = { activeNav.push(Route.Permissions(route.pkg, route.label)) },
-                        onOpenAppOps = { activeNav.push(Route.AppOps(route.pkg, route.label)) },
-                        onOpenComponents = { activeNav.push(Route.Components(route.pkg, route.label)) },
-                        onOpenSpecial = { activeNav.push(Route.SpecialAccess(route.pkg, route.label)) },
-                        notify = ::notify,
-                    )
+                    PageSurface {
+                        AppDetailScreen(
+                            pkg = route.pkg,
+                            fallbackLabel = route.label,
+                            onBack = { activeNav.pop() },
+                            onOpenPermissions = { activeNav.push(Route.Permissions(route.pkg, route.label)) },
+                            onOpenAppOps = { activeNav.push(Route.AppOps(route.pkg, route.label)) },
+                            onOpenComponents = { activeNav.push(Route.Components(route.pkg, route.label)) },
+                            onOpenSpecial = { activeNav.push(Route.SpecialAccess(route.pkg, route.label)) },
+                            notify = ::notify,
+                        )
+                    }
                 }
                 entry<Route.Permissions> { route ->
-                    PermissionsScreen(route.pkg, route.label, onBack = { activeNav.pop() }, notify = ::notify)
+                    PageSurface { PermissionsScreen(route.pkg, route.label, onBack = { activeNav.pop() }, notify = ::notify) }
                 }
                 entry<Route.AppOps> { route ->
-                    AppOpsScreen(route.pkg, route.label, onBack = { activeNav.pop() }, notify = ::notify)
+                    PageSurface { AppOpsScreen(route.pkg, route.label, onBack = { activeNav.pop() }, notify = ::notify) }
                 }
                 entry<Route.Components> { route ->
-                    ComponentsScreen(route.pkg, route.label, onBack = { activeNav.pop() }, notify = ::notify)
+                    PageSurface { ComponentsScreen(route.pkg, route.label, onBack = { activeNav.pop() }, notify = ::notify) }
                 }
                 entry<Route.SpecialAccess> { route ->
-                    SpecialAccessScreen(route.pkg, route.label, onBack = { activeNav.pop() }, onOpenAuth = { activeNav.push(Route.Auth) }, notify = ::notify)
+                    PageSurface {
+                        SpecialAccessScreen(
+                            pkg = route.pkg,
+                            label = route.label,
+                            onBack = { activeNav.pop() },
+                            onOpenAuth = { activeNav.push(Route.Auth) },
+                            notify = ::notify,
+                        )
+                    }
                 }
-                entry<Route.Picker> { route ->
-                    AppPickerScreen(
-                        title = route.title,
-                        subtitle = route.subtitle,
-                        onBack = { activeNav.pop() },
-                        onPick = { pkg, label ->
-                            when (route.target) {
-                                PickerTarget.APPOPS -> activeNav.push(Route.AppOps(pkg, label))
-                                PickerTarget.COMPONENTS -> activeNav.push(Route.Components(pkg, label))
-                                PickerTarget.SPECIAL -> activeNav.push(Route.SpecialAccess(pkg, label))
-                                PickerTarget.PERMISSIONS -> activeNav.push(Route.Permissions(pkg, label))
-                            }
-                        },
-                    )
+                entry<Route.Picker>(transition = NavTransitions.Modal) { route ->
+                    PageSurface {
+                        AppPickerScreen(
+                            title = route.title,
+                            subtitle = route.subtitle,
+                            onBack = { activeNav.pop() },
+                            onPick = { pkg, label ->
+                                when (route.target) {
+                                    PickerTarget.APPOPS -> activeNav.push(Route.AppOps(pkg, label))
+                                    PickerTarget.COMPONENTS -> activeNav.push(Route.Components(pkg, label))
+                                    PickerTarget.SPECIAL -> activeNav.push(Route.SpecialAccess(pkg, label))
+                                    PickerTarget.PERMISSIONS -> activeNav.push(Route.Permissions(pkg, label))
+                                }
+                            },
+                        )
+                    }
                 }
             }
         }

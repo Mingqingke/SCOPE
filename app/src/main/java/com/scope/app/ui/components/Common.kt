@@ -271,7 +271,7 @@ fun CheckBadge(kind: AuthVisual, modifier: Modifier = Modifier) {
     val scope = LocalScope.current
     val color = when (kind) {
         AuthVisual.OK -> scope.green
-        AuthVisual.WARN -> scope.amber
+        AuthVisual.WARN -> Color(0xFFE05A4F)
         AuthVisual.OFF -> scope.textSecondary.copy(alpha = 0.40f)
     }
     Canvas(modifier) {

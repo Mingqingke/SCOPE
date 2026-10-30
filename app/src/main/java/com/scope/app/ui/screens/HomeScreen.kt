@@ -98,7 +98,7 @@ fun HomeScreen(
     val presentation = present(status, shizukuVersion)
     val accent = when {
         status.rootGranted || status.shizukuReady -> scope.green
-        status.shizukuInstalled -> scope.amber
+        status.shizukuInstalled -> androidx.compose.ui.graphics.Color(0xFFE05A4F)
         else -> scope.textSecondary
     }
 

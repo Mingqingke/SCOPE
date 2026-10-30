@@ -68,6 +68,7 @@ import top.yukonga.miuix.kmp.icon.extended.Backup
 import top.yukonga.miuix.kmp.icon.extended.ChevronForward
 import top.yukonga.miuix.kmp.icon.extended.Info
 import top.yukonga.miuix.kmp.icon.extended.Layers
+import top.yukonga.miuix.kmp.icon.extended.Link
 import top.yukonga.miuix.kmp.icon.extended.Lock
 import top.yukonga.miuix.kmp.icon.extended.Refresh
 import top.yukonga.miuix.kmp.icon.extended.Theme
@@ -759,48 +760,38 @@ fun SettingsAboutDeviceScreen(onBack: () -> Unit, onOpen: (Route) -> Unit) {
 fun DeviceInfoScreen(device: DeviceSnapshot, status: BackendStatus, onBack: () -> Unit) {
     val scope = LocalScope.current
     Column(Modifier.fillMaxSize()) {
-        ScreenTitle(title = "设备信息", subtitle = "全部数值来自本机读取", onBack = onBack)
+        ScreenTitle(title = "设备信息", subtitle = "数值来自本机读取", onBack = onBack)
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 28.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item {
-                GroupCard("设备概览") {
-                    DeviceRow("设备型号", device.model)
+                GroupCard("设备") {
+                    DeviceRow("型号", device.model)
                     DeviceRow("厂商", device.manufacturer)
-                    DeviceRow("品牌", device.brand)
-                    DeviceRow("设备代号", device.deviceCode)
                 }
             }
             item {
-                GroupCard("系统信息") {
-                    DeviceRow("Android 版本", device.androidRelease)
-                    DeviceRow("API Level", device.sdk.toString())
+                GroupCard("系统") {
+                    DeviceRow("Android", device.androidRelease)
+                    DeviceRow("API", device.sdk.toString())
                     DeviceRow("厂商系统", device.osName)
                     DeviceRow("系统版本", device.osVersion)
-                    DeviceRow("Build ID", device.buildId)
-                    DeviceRow("增量版本", device.buildIncremental)
-                    DeviceRow("安全补丁", device.securityPatch)
-                    DeviceRow("内核版本", device.kernel)
                 }
             }
             item {
-                GroupCard("硬件信息") {
-                    DeviceRow("处理器", listOf(device.socVendor, device.cpu).filter { it.isNotBlank() }.joinToString(" "))
-                    DeviceRow("CPU ABI", device.abi)
-                    DeviceRow("运行内存", if (device.ramTotal > 0) Device.formatBytes(device.ramTotal) else "")
-                    DeviceRow("屏幕分辨率", device.resolution)
-                    DeviceRow("屏幕密度", if (device.densityDpi > 0) "${device.densityDpi} dpi" else "")
-                    DeviceRow("屏幕尺寸", device.screenInches?.let { String.format("%.1f 英寸", it) } ?: "")
-                    DeviceRow("电池容量", device.batteryCapacityMah?.let { "$it mAh" } ?: "")
+                GroupCard("硬件") {
+                    DeviceRow("处理器", device.cpu)
+                    DeviceRow("内存", if (device.ramTotal > 0) Device.formatBytes(device.ramTotal) else "")
+                    DeviceRow("分辨率", device.resolution)
                 }
             }
             item {
-                GroupCard("存储信息") {
+                GroupCard("存储") {
+                    DeviceRow("已用", Device.formatBytes(device.storageTotal - device.storageFree))
+                    DeviceRow("可用", Device.formatBytes(device.storageFree))
                     DeviceRow("总容量", Device.formatBytes(device.storageTotal))
-                    DeviceRow("已使用", Device.formatBytes(device.storageTotal - device.storageFree))
-                    DeviceRow("可用空间", Device.formatBytes(device.storageFree))
                     if (device.storageTotal > 0) {
                         val ratio = (device.storageTotal - device.storageFree).toFloat() / device.storageTotal.toFloat()
                         Spacer(Modifier.height(8.dp))
@@ -820,14 +811,6 @@ fun DeviceInfoScreen(device: DeviceSnapshot, status: BackendStatus, onBack: () -
                             )
                         }
                     }
-                }
-            }
-            item {
-                GroupCard("授权环境") {
-                    DeviceRow("当前后端", status.active.label)
-                    DeviceRow("执行身份", status.identity)
-                    DeviceRow("Shizuku 服务", if (status.shizukuRunning) "已连接" else "未运行")
-                    DeviceRow("Root", if (status.rootGranted) "已授权" else "未授权")
                 }
             }
         }
@@ -875,6 +858,7 @@ private fun DeviceRow(label: String, value: String) {
 @Composable
 fun AboutScopeScreen(device: DeviceSnapshot, onBack: () -> Unit, notify: (String) -> Unit) {
     val scope = LocalScope.current
+    val context = LocalContext.current
     Column(Modifier.fillMaxSize()) {
         ScreenTitle(title = "关于 SCOPE", onBack = onBack)
         Column(
@@ -906,6 +890,19 @@ fun AboutScopeScreen(device: DeviceSnapshot, onBack: () -> Unit, notify: (String
             PrefCard {
                 Column {
                     UpdateCheckRow(notify = notify)
+                    PrefDivider()
+                    ArrowPreference(
+                        title = "GitHub 仓库",
+                        summary = "github.com/Mingqingke/SCOPE",
+                        startAction = { PrefIcon(MiuixIcons.Link, scope.blue) },
+                        onClick = {
+                            runCatching {
+                                val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://github.com/Mingqingke/SCOPE"))
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                context.startActivity(intent)
+                            }
+                        },
+                    )
                 }
             }
             PrefCard {

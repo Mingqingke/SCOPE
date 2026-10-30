@@ -2,5 +2,5 @@
 <resources>
     <color name="scope_bg">#F4F4F6</color>
     <color name="scope_bg_dark">#0E0F11</color>
-    <color name="scope_icon_bg">#F7F7F7</color>
+    <color name="scope_icon_bg">#FFFFFF</color>
 </resources>

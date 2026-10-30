@@ -1,15 +1,15 @@
 {
-  "versionCode": 3,
-  "versionName": "1.1.1",
-  "notes": "修复了一些已知问题\n应用图标更新\n权限可在应用内直接开关",
-  "size": 8792959,
-  "sha256": "29e6c1623fcd95168d823235364bd9c1966cfb6822d42c1b7215595a9de25299",
+  "versionCode": 4,
+  "versionName": "1.1.2",
+  "notes": "图标改为原图提取\n未授权状态改为红色\n页面转场不再透出下层\n设备信息精简\n修复了一些已知问题",
+  "size": 8813840,
+  "sha256": "5a72eca641ed2d77918a4099ea0a0ae27a733fe0eecaccecf6665b295a0b4b87",
   "force": false,
   "apkUrls": [
-    "https://github.com/Mingqingke/SCOPE/releases/download/v1.1.1/SCOPE-v1.1.1.apk",
-    "https://cdn.jsdelivr.net/gh/Mingqingke/SCOPE@main/releases/SCOPE-v1.1.1.apk",
-    "https://raw.githubusercontent.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.1.1.apk",
-    "https://raw.gitmirror.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.1.1.apk",
-    "https://ghproxy.net/https://github.com/Mingqingke/SCOPE/releases/download/v1.1.1/SCOPE-v1.1.1.apk"
+    "https://github.com/Mingqingke/SCOPE/releases/download/v1.1.2/SCOPE-v1.1.2.apk",
+    "https://cdn.jsdelivr.net/gh/Mingqingke/SCOPE@main/releases/SCOPE-v1.1.2.apk",
+    "https://raw.githubusercontent.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.1.2.apk",
+    "https://raw.gitmirror.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.1.2.apk",
+    "https://ghproxy.net/https://github.com/Mingqingke/SCOPE/releases/download/v1.1.2/SCOPE-v1.1.2.apk"
   ]
 }
