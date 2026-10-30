@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- SCOPE 标识：两道粗笔画构成的 S 形，端点与转角全部圆角 -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M35,57 L67,37 C77,30 85,47 73,57 L43,75"
+        android:strokeColor="#141414"
+        android:strokeWidth="14.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>
