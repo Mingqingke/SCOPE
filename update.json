@@ -1,15 +1,15 @@
 {
-  "versionCode": 13,
-  "versionName": "1.2.1",
-  "notes": "授权与系统页面重做\n主界面去掉右上角检测按钮\n工作中显示 Max 或 Pro\n新增高级工具页可直接执行\n修复 Root 已授权仍提示未检测到 su",
+  "versionCode": 14,
+  "versionName": "1.2.2",
+  "notes": "工作中同时显示 Max 或 Pro 与 GKI 或 LKM\n删除命令面板式高级工具页\n强制停止移入应用详情\n系统动画开关移入外观\n修复了一些已知问题",
   "size": 8961889,
-  "sha256": "14c91c7f9098e6a03d497e91c670852e4bb8839dd67eaf5817c5fd28b862d35a",
+  "sha256": "7e3a1b1afe293b948aae7163f839bdd3488ac8a92a770c5c9334772aef11594e",
   "force": false,
   "apkUrls": [
-    "https://github.com/Mingqingke/SCOPE/releases/download/v1.2.1/SCOPE-v1.2.1.apk",
-    "https://cdn.jsdelivr.net/gh/Mingqingke/SCOPE@main/releases/SCOPE-v1.2.1.apk",
-    "https://raw.githack.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.2.1.apk",
-    "https://raw.githubusercontent.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.2.1.apk",
-    "https://raw.gitmirror.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.2.1.apk"
+    "https://github.com/Mingqingke/SCOPE/releases/download/v1.2.2/SCOPE-v1.2.2.apk",
+    "https://cdn.jsdelivr.net/gh/Mingqingke/SCOPE@main/releases/SCOPE-v1.2.2.apk",
+    "https://raw.githack.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.2.2.apk",
+    "https://raw.githubusercontent.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.2.2.apk",
+    "https://raw.gitmirror.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.2.2.apk"
   ]
 }
