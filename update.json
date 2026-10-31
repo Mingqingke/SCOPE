@@ -1,15 +1,15 @@
 {
-  "versionCode": 12,
-  "versionName": "1.2.0",
-  "notes": "权限等级内容扩充并加入系统工具\n柔光玻璃改为模糊光斑与半透明卡片\nPro 与 Max 工具可直接执行\n修复了一些已知问题",
+  "versionCode": 13,
+  "versionName": "1.2.1",
+  "notes": "授权与系统页面重做\n主界面去掉右上角检测按钮\n工作中显示 Max 或 Pro\n新增高级工具页可直接执行\n修复 Root 已授权仍提示未检测到 su",
   "size": 8961889,
-  "sha256": "70b962dd1d715ca272c566b14f29a2763cb63a4b8d3a565192a27c97289e7c87",
+  "sha256": "14c91c7f9098e6a03d497e91c670852e4bb8839dd67eaf5817c5fd28b862d35a",
   "force": false,
   "apkUrls": [
-    "https://github.com/Mingqingke/SCOPE/releases/download/v1.2.0/SCOPE-v1.2.0.apk",
-    "https://cdn.jsdelivr.net/gh/Mingqingke/SCOPE@main/releases/SCOPE-v1.2.0.apk",
-    "https://raw.githack.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.2.0.apk",
-    "https://raw.githubusercontent.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.2.0.apk",
-    "https://raw.gitmirror.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.2.0.apk"
+    "https://github.com/Mingqingke/SCOPE/releases/download/v1.2.1/SCOPE-v1.2.1.apk",
+    "https://cdn.jsdelivr.net/gh/Mingqingke/SCOPE@main/releases/SCOPE-v1.2.1.apk",
+    "https://raw.githack.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.2.1.apk",
+    "https://raw.githubusercontent.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.2.1.apk",
+    "https://raw.gitmirror.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.2.1.apk"
   ]
 }
