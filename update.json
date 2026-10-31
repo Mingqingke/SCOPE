@@ -1,15 +1,15 @@
 {
-  "versionCode": 8,
-  "versionName": "1.1.6",
-  "notes": "优先使用 Root\n系统版本按厂商显示\n切换标签有动画\n高级材质与删除粒子开关\n更新只从最快源下载一次\n修复了一些已知问题",
+  "versionCode": 9,
+  "versionName": "1.1.7",
+  "notes": "系统版本按 Xiaomi HyperOS 样式显示\n授权优先测试 Root\n高级材质改为更轻的层次\n修复了一些已知问题",
   "size": 8945505,
-  "sha256": "f3cef9a71ede33d4b60947b90adec0cfc11654b01fc0d99a7e86c9ac163373e2",
+  "sha256": "99de8464e474bd2906239866766900d14375e16da6eb89b49545aab3a5af7b6f",
   "force": false,
   "apkUrls": [
-    "https://github.com/Mingqingke/SCOPE/releases/download/v1.1.6/SCOPE-v1.1.6.apk",
-    "https://cdn.jsdelivr.net/gh/Mingqingke/SCOPE@main/releases/SCOPE-v1.1.6.apk",
-    "https://raw.githack.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.1.6.apk",
-    "https://raw.githubusercontent.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.1.6.apk",
-    "https://raw.gitmirror.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.1.6.apk"
+    "https://github.com/Mingqingke/SCOPE/releases/download/v1.1.7/SCOPE-v1.1.7.apk",
+    "https://cdn.jsdelivr.net/gh/Mingqingke/SCOPE@main/releases/SCOPE-v1.1.7.apk",
+    "https://raw.githack.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.1.7.apk",
+    "https://raw.githubusercontent.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.1.7.apk",
+    "https://raw.gitmirror.com/Mingqingke/SCOPE/main/releases/SCOPE-v1.1.7.apk"
   ]
 }
